@@ -3,6 +3,7 @@ using BepInEx.Unity.IL2CPP.Utils.Collections;
 using HydraMenu.assets;
 using HydraMenu.modules;
 using HydraMenu.network;
+using InnerNet;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -45,12 +46,12 @@ namespace HydraMenu.ui.sections
 			GUILayout.BeginHorizontal();
 			if(GUILayout.Button("Start Medbay Scan"))
 			{
-				RPCEmitter.SendSetScanner(true);
+				SetScanner(true);
 			}
 
 			if(GUILayout.Button("Finish Medbay Scan"))
 			{
-				RPCEmitter.SendSetScanner(false);
+				SetScanner(false);
 			}
 			GUILayout.EndHorizontal();
 
@@ -90,7 +91,7 @@ namespace HydraMenu.ui.sections
 			}
 		}
 
-		public IEnumerator CompleteAllTasks()
+		private IEnumerator CompleteAllTasks()
 		{
 			Il2CppSystem.Collections.Generic.List<PlayerTask> allTasks = PlayerControl.LocalPlayer.myTasks;
 
@@ -114,7 +115,24 @@ namespace HydraMenu.ui.sections
 			Hydra.notifications.Send("Task Finisher", "All your tasks have been finished.", 5);
 		}
 
-		public void PlayAnimation(TaskTypes task)
+		private void SetScanner(bool scanning)
+		{
+			if(PlayerControl.LocalPlayer == null)
+			{
+				Hydra.notifications.Send("Set Scanner", "This option can only be used inside of a game.");
+				return;
+			}
+
+			if(Utilities.IsAnticheatPresent() && AmongUsClient.Instance.GameState != InnerNetClient.GameStates.Started)
+			{
+				Hydra.notifications.Send("Set Scanner", "The game must has started in order for this feature to work.");
+				return;
+			}
+
+			RPCEmitter.SendSetScanner(scanning);
+		}
+
+		private void PlayAnimation(TaskTypes task)
 		{
 			if(PlayerControl.LocalPlayer == null)
 			{
@@ -125,6 +143,12 @@ namespace HydraMenu.ui.sections
 			if(ShipStatus.Instance == null)
 			{
 				Hydra.notifications.Send("Play Animation", "There must be an instance of ShipStatus for this feature to work.");
+				return;
+			}
+
+			if(Utilities.IsAnticheatPresent() && AmongUsClient.Instance.GameState != InnerNetClient.GameStates.Started)
+			{
+				Hydra.notifications.Send("Play Animation", "The game must has started in order for this feature to work.");
 				return;
 			}
 

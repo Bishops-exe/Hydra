@@ -59,16 +59,15 @@ namespace HydraMenu
 
 		public static PlayerControl GetRandomPlayer(bool excludeHost = false, bool excludeDead = false, bool excludeImposters = false, bool excludeSelf = true)
 		{
-			Il2CppSystem.Collections.Generic.List<PlayerControl> allPlayers = PlayerControl.AllPlayerControls;
 			List<PlayerControl> validPlayers = new List<PlayerControl>();
 
-			foreach(PlayerControl player in allPlayers)
+			foreach(PlayerControl player in PlayerControl.AllPlayerControls)
 			{
 				if(
 					(excludeSelf && AmongUsClient.Instance.ClientId == player.OwnerId) ||
 					(excludeHost && AmongUsClient.Instance.HostId == player.OwnerId) ||
 					(excludeDead && player.Data.IsDead) ||
-					(excludeImposters && player.Data.Role.CanUseKillButton)
+					(excludeImposters && RoleManager.IsImpostorRole(player.Data.RoleType))
 				) continue;
 
 				validPlayers.Add(player);
@@ -326,7 +325,7 @@ namespace HydraMenu
 			{
 				Hydra.Log.LogInfo($"Sending Enter ventilation system update to {player.OwnerId}");
 
-				MessageWriter writer = MessageWriter.Get(SendOption.Reliable);
+				MessageWriter writer = MessageWriter.Get(SendOption.None);
 				writer.Write((ushort)0);
 				writer.Write((byte)VentilationSystem.Operation.Enter);
 				writer.Write((byte)0);
@@ -337,7 +336,7 @@ namespace HydraMenu
 
 			Hydra.Log.LogInfo($"Sending BootImposters ventilation system update to {player.OwnerId}");
 
-			MessageWriter writer2 = MessageWriter.Get(SendOption.Reliable);
+			MessageWriter writer2 = MessageWriter.Get(SendOption.None);
 			writer2.Write((ushort)1);
 			writer2.Write((byte)VentilationSystem.Operation.BootImpostors);
 			writer2.Write((byte)0);

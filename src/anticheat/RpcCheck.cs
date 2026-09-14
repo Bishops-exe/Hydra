@@ -5,7 +5,7 @@ namespace HydraMenu.anticheat
 {
 	internal abstract class RpcCheck : ICheck
 	{
-		public virtual bool Enabled { get; set; } = true;
+		public bool Enabled { get; set; } = true;
 
 		public virtual bool Validate(PlayerControl player, MessageReader reader)
 		{

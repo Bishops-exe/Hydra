@@ -39,6 +39,12 @@ namespace HydraMenu.ui.sections
 
 		private void HandleTeleport(Vector2 location)
 		{
+			if(PlayerControl.LocalPlayer == null)
+			{
+				Hydra.notifications.Send("Teleport", "This option can only be used inside of a game.");
+				return;
+			}
+
 			Teleporter.TeleportTo(location);
 		}
 	}

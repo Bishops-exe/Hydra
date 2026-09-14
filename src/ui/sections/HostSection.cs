@@ -85,17 +85,7 @@ namespace HydraMenu.ui.sections
 			GUILayout.BeginHorizontal();
 			if(GUILayout.Button("Despawn Map"))
 			{
-				if(shipList.Count != 0)
-				{
-					InnerNetObject ship = shipList.Dequeue();
-					ship.Despawn();
-
-					Hydra.notifications.Send("Game Map", "The current map has been despawned.", 5);
-				}
-				else
-				{
-					Hydra.notifications.Send("Game Map", "The game map has already been despawned.", 10);
-				}
+				DespawnMap();
 			}
 
 			if(GUILayout.Button("Spawn Map"))
@@ -107,17 +97,7 @@ namespace HydraMenu.ui.sections
 			GUILayout.BeginHorizontal();
 			if(GUILayout.Button("Despawn Lobby"))
 			{
-				if(lobbyList.Count > 0)
-				{
-					InnerNetObject lobby = lobbyList.Dequeue();
-					lobby.Despawn();
-
-					Hydra.notifications.Send("Lobby Map", "The lobby map has been despawned.", 5);
-				}
-				else
-				{
-					Hydra.notifications.Send("Lobby Map", "The lobby map has already been despawned.", 10);
-				}
+				DespawnLobby();
 			}
 
 			if(GUILayout.Button("Spawn Lobby"))
@@ -239,7 +219,7 @@ namespace HydraMenu.ui.sections
 
 			if(Utilities.IsAnticheatPresent() && !AmongUsClient.Instance.AmHost)
 			{
-				Hydra.notifications.Send("Lobby Spawner", "This feature can only be used if you are the host of the lobby.");
+				Hydra.notifications.Send("Spawn Lobby", "This feature can only be used if you are the host of the lobby.");
 				return;
 			}
 
@@ -256,7 +236,29 @@ namespace HydraMenu.ui.sections
 			batch.QueueSpawn(lobby, -2, SpawnFlags.None);
 			batch.FinishBatch();
 
-			Hydra.notifications.Send("Lobby Spawner", "A new instance of the lobby has been spawned.", 5);
+			Hydra.notifications.Send("Spawn Lobby", "A new instance of the lobby has been spawned.", 5);
+		}
+
+		private static void DespawnLobby()
+		{
+			Hydra.Log.LogInfo($"Attempting to despawn lobby");
+
+			if(Utilities.IsAnticheatPresent() && !AmongUsClient.Instance.AmHost)
+			{
+				Hydra.notifications.Send("Despawn Lobby", "This feature can only be used if you are the host of the lobby.");
+				return;
+			}
+
+			if(lobbyList.Count == 0)
+			{
+				Hydra.notifications.Send("Despawn Lobby", "The lobby map has already been despawned.", 10);
+				return;
+			}
+
+			InnerNetObject lobby = lobbyList.Dequeue();
+			lobby.Despawn();
+
+			Hydra.notifications.Send("Despawn Lobby", "The lobby map has been despawned.", 5);
 		}
 
 		private static IEnumerator SpawnMap(byte mapId)
@@ -268,7 +270,7 @@ namespace HydraMenu.ui.sections
 			// however +25 modded protocol lobbies, while having much of their anticheat checks disabled, still has checks against non-hosts sending spawn messages
 			if(Utilities.IsAnticheatPresent() && !AmongUsClient.Instance.AmHost)
 			{
-				Hydra.notifications.Send("Map Spawner", "This feature can only be used if you are the host of the lobby.");
+				Hydra.notifications.Send("Spawn Map", "This feature can only be used if you are the host of the lobby.");
 				yield break;
 			}
 
@@ -281,7 +283,29 @@ namespace HydraMenu.ui.sections
 			batch.QueueSpawn(ship, -2, SpawnFlags.None);
 			batch.FinishBatch();
 
-			Hydra.notifications.Send("Map Spawner", $"{(MapNames)mapId} has been spawned.", 5);
+			Hydra.notifications.Send("Spawn Map", $"{(MapNames)mapId} has been spawned.", 5);
+		}
+
+		private static void DespawnMap()
+		{
+			Hydra.Log.LogInfo($"Attempting to despawn map");
+
+			if(Utilities.IsAnticheatPresent() && !AmongUsClient.Instance.AmHost)
+			{
+				Hydra.notifications.Send("Despawn Map", "This feature can only be used if you are the host of the lobby.");
+				return;
+			}
+
+			if(shipList.Count == 0)
+			{
+				Hydra.notifications.Send("Despawn Map", "The current map has already been despawned.", 10);
+				return;
+			}
+
+			InnerNetObject ship = shipList.Dequeue();
+			ship.Despawn();
+
+			Hydra.notifications.Send("Despawn Map", "The current map has been despawned.", 5);
 		}
 
 		private static IEnumerator ShapeshiftAll(PlayerControl target)

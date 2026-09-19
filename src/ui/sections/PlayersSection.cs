@@ -225,46 +225,12 @@ namespace HydraMenu.ui.sections
 			GUILayout.BeginHorizontal();
 			if(GUILayout.Button("Force All Votes To"))
 			{
-				if(MeetingHud.Instance == null)
-				{
-					Hydra.notifications.Send("Vote Forcer", "This option can only be used when there is an active meeting.");
-				}
-				else
-				{
-					MeetingHud.VoterState[] array = new MeetingHud.VoterState[PlayerControl.AllPlayerControls.Count];
-
-					for(int i = 0; i < array.Length; i++)
-					{
-						MeetingHud.VoterState state = array[i];
-
-						state.VoterId = (byte)i;
-						state.VotedForId = target.PlayerId;
-
-						array[i] = state;
-					}
-
-					BatchedMessage batch = new BatchedMessage();
-					batch.QueueVotingComplete(array, target.Data, false, false, 0);
-					batch.FinishBatch();
-				}
+				ForceAllVotesTo(target);
 			}
 
 			if(GUILayout.Button("Eject"))
 			{
-				BatchedMessage batch = new BatchedMessage();
-
-				if(MeetingHud.Instance == null)
-				{
-					MeetingHud.Instance = UnityEngine.Object.Instantiate<MeetingHud>(HudManager.Instance.MeetingPrefab);
-					batch.QueueSpawn(MeetingHud.Instance, -2, SpawnFlags.None);
-				}
-
-				MeetingHud.VoterState[] votes = Array.Empty<MeetingHud.VoterState>();
-
-				batch.QueueVotingComplete(votes, target.Data, false, false, 0);
-				// If we created a MeetingHud object then it will be destroyed by the RpcClose function
-				batch.QueueCloseMeeting();
-				batch.FinishBatch();
+				EjectPlayer(target);
 			}
 			GUILayout.EndHorizontal();
 
@@ -423,6 +389,61 @@ namespace HydraMenu.ui.sections
 
 			Hydra.notifications.Send("Murder Player", $"Attempted to kill {target.Data.PlayerName}.", 5);
 			PlayerControl.LocalPlayer.CmdCheckMurder(target);
+		}
+
+		private void ForceAllVotesTo(PlayerControl player)
+		{
+			if(Utilities.IsAnticheatPresent() && !AmongUsClient.Instance.AmHost)
+			{
+				Hydra.notifications.Send("Force Votes", "You must be the host of the lobby in order to use this feature.");
+				return;
+			}
+
+			if(MeetingHud.Instance == null)
+			{
+				Hydra.notifications.Send("Force Votes", "This option can only be used when there is an active meeting.");
+				return;
+			}
+
+			MeetingHud.VoterState[] array = new MeetingHud.VoterState[PlayerControl.AllPlayerControls.Count];
+
+			for(int i = 0; i < array.Length; i++)
+			{
+				MeetingHud.VoterState state = array[i];
+
+				state.VoterId = (byte)i;
+				state.VotedForId = player.PlayerId;
+
+				array[i] = state;
+			}
+
+			BatchedMessage batch = new BatchedMessage();
+			batch.QueueVotingComplete(array, player.Data, false, false, 0);
+			batch.FinishBatch();
+		}
+
+		private void EjectPlayer(PlayerControl player)
+		{
+			if(Utilities.IsAnticheatPresent() && !AmongUsClient.Instance.AmHost)
+			{
+				Hydra.notifications.Send("Eject Player", "You must be the host of the lobby in order to use this feature.");
+				return;
+			}
+
+			BatchedMessage batch = new BatchedMessage();
+
+			if(MeetingHud.Instance == null)
+			{
+				MeetingHud.Instance = UnityEngine.Object.Instantiate<MeetingHud>(HudManager.Instance.MeetingPrefab);
+				batch.QueueSpawn(MeetingHud.Instance, -2, SpawnFlags.None);
+			}
+
+			MeetingHud.VoterState[] votes = Array.Empty<MeetingHud.VoterState>();
+
+			batch.QueueVotingComplete(votes, player.Data, false, false, 0);
+			// If we created a MeetingHud object then it will be destroyed by the RpcClose function
+			batch.QueueCloseMeeting();
+			batch.FinishBatch();
 		}
 
 		private static IEnumerator AttemptFrameForKillingAll(PlayerControl target)

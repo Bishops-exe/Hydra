@@ -23,7 +23,9 @@ namespace HydraMenu.modules.self
 			{
 				if(!Instance.Enabled || __instance != PlayerControl.LocalPlayer) return true;
 
-				RPCEmitter.SendSetScanner(value);
+				BatchedMessage batch = new BatchedMessage();
+				batch.QueueSetScanner(__instance, value);
+				batch.FinishBatch();
 				return false;
 			}
 		}

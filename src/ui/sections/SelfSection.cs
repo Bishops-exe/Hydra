@@ -129,7 +129,9 @@ namespace HydraMenu.ui.sections
 				return;
 			}
 
-			RPCEmitter.SendSetScanner(scanning);
+			BatchedMessage batch = new BatchedMessage();
+			batch.QueueSetScanner(PlayerControl.LocalPlayer, scanning);
+			batch.FinishBatch();
 		}
 
 		private void PlayAnimation(TaskTypes task)

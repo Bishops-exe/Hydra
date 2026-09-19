@@ -58,6 +58,36 @@ namespace HydraMenu.network
 			msgCount++;
 		}
 
+		public void QueueDespawn(uint netId)
+		{
+			writer.StartMessage((byte)GameDataTypes.DespawnFlag);
+			writer.WritePacked(netId);
+			writer.EndMessage();
+
+			msgCount++;
+		}
+
+		public void QueueClientReady(int clientId)
+		{
+			ClientData client = AmongUsClient.Instance.FindClientById(clientId);
+			QueueClientReady(client);
+		}
+
+		public void QueueClientReady(ClientData client)
+		{
+			if(IsGlobal || AmTarget)
+			{
+				client.IsReady = true;
+				if(AmTarget) return;
+			}
+
+			writer.StartMessage((byte)GameDataTypes.ReadyFlag);
+			writer.WritePacked(client.Id);
+			writer.EndMessage();
+
+			msgCount++;
+		}
+
 		public void QueueCompleteTask(PlayerControl source, uint taskIndex)
 		{
 			if(IsGlobal || AmTarget)
@@ -243,6 +273,23 @@ namespace HydraMenu.network
 			writer.WritePacked(ShipStatus.Instance.NetId);
 			writer.Write((byte)RpcCalls.CloseDoorsOfType);
 			writer.Write((byte)door);
+			writer.EndMessage();
+
+			msgCount++;
+		}
+
+		public void QueueSetTasks(NetworkedPlayerInfo player, byte[] tasks)
+		{
+			if(IsGlobal || AmTarget)
+			{
+				player.SetTasks(tasks);
+				if(AmTarget) return;
+			}
+
+			writer.StartMessage((byte)GameDataTypes.RpcFlag);
+			writer.WritePacked(player.NetId);
+			writer.Write((byte)RpcCalls.SetTasks);
+			writer.WriteBytesAndSize(tasks);
 			writer.EndMessage();
 
 			msgCount++;

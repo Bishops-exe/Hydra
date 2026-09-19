@@ -13,7 +13,7 @@ namespace HydraMenu.modules.protections
 
 		private void OnGameStart()
 		{
-			if(!AmongUsClient.Instance.AmHost) return;
+			if(!AmongUsClient.Instance.AmHost || ModuleManager.tempBanAll.Enabled) return;
 
 			PlayerControl player = Utilities.GetRandomPlayer();
 			if(player == null) return;

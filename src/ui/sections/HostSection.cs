@@ -76,6 +76,11 @@ namespace HydraMenu.ui.sections
 			}
 			GUILayout.EndHorizontal();
 
+			if(GUILayout.Button("Temp Ban All Players"))
+			{
+				ModuleManager.tempBanAll.Enabled = true;
+			}
+
 			GUILayout.Space(5);
 			GUILayout.Label("Map Spawner:");
 

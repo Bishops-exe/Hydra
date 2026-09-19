@@ -24,6 +24,7 @@ namespace HydraMenu.modules
 		public static DisableVentClean disableVentClean = new DisableVentClean();
 		public static FakeShapeshiftBubble fakeShapeshiftBubble = new FakeShapeshiftBubble();
 		public static FlipSkeld flipSkeld = new FlipSkeld();
+		public static TempBanAll tempBanAll = new TempBanAll();
 		public static VoteImmune voteImmune = new VoteImmune();
 
 		// Misc
@@ -94,6 +95,7 @@ namespace HydraMenu.modules
 				disableVentClean,
 				fakeShapeshiftBubble,
 				flipSkeld,
+				tempBanAll,
 				voteImmune,
 
 				chatLogger,

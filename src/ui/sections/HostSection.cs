@@ -126,19 +126,7 @@ namespace HydraMenu.ui.sections
 
 			if(GUILayout.Button("Close Meeting"))
 			{
-				if(MeetingHud.Instance == null)
-				{
-					Hydra.notifications.Send("Skip Meeting", "This option can only be used in a meeting.");
-				}
-				else
-				{
-					MeetingHud.VoterState[] votes = Array.Empty<MeetingHud.VoterState>();
-
-					BatchedMessage batch = new BatchedMessage();
-					batch.QueueVotingComplete(votes, null, false, false, 0);
-					batch.QueueCloseMeeting();
-					batch.FinishBatch();
-				}
+				CloseMeeting();
 			}
 
 			GUILayout.Space(5);
@@ -311,6 +299,26 @@ namespace HydraMenu.ui.sections
 			ship.Despawn();
 
 			Hydra.notifications.Send("Despawn Map", "The current map has been despawned.", 5);
+		}
+
+		private void CloseMeeting()
+		{
+			if(Utilities.IsAnticheatPresent() && !AmongUsClient.Instance.AmHost)
+			{
+				Hydra.notifications.Send("Close Meeting", "This feature can only be used if you are the host of the lobby.");
+				return;
+			}
+
+			if(MeetingHud.Instance == null)
+			{
+				Hydra.notifications.Send("Close Meeting", "This option can only be during a meeting.");
+				return;
+			}
+
+			BatchedMessage batch = new BatchedMessage();
+			batch.QueueVotingComplete(Array.Empty<MeetingHud.VoterState>(), null, false, false, 0);
+			batch.QueueCloseMeeting();
+			batch.FinishBatch();
 		}
 
 		private static IEnumerator ShapeshiftAll(PlayerControl target)

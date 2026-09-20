@@ -159,6 +159,23 @@ namespace HydraMenu.network
 			msgCount++;
 		}
 
+		public void QueueSendChat(PlayerControl source, string text)
+		{
+			if(IsGlobal || AmTarget)
+			{
+				HudManager.Instance.Chat.AddChat(source, text, false);
+				if(AmTarget) return;
+			}
+
+			writer.StartMessage((byte)GameDataTypes.RpcFlag);
+			writer.WritePacked(source.NetId);
+			writer.Write((byte)RpcCalls.SendChat);
+			writer.Write(text);
+			writer.EndMessage();
+
+			msgCount++;
+		}
+
 		public void QueueSetScanner(PlayerControl source, bool scanning)
 		{
 			QueueSetScanner(source, scanning, ++source.scannerCount);

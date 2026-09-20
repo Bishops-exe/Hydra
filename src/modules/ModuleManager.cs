@@ -29,6 +29,7 @@ namespace HydraMenu.modules
 
 		// Misc
 		public static ChatLogger chatLogger = new ChatLogger();
+		public static Whisper whisper = new Whisper();
 
 		// Protections
 		public static AntiCrash antiCrash = new AntiCrash();
@@ -99,6 +100,7 @@ namespace HydraMenu.modules
 				voteImmune,
 
 				chatLogger,
+				whisper,
 
 				antiCrash,
 				antiKick,

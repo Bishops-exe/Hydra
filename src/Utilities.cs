@@ -16,6 +16,8 @@ namespace HydraMenu
 		private static readonly Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<PetData> allPets = HatManager.Instance.allPets;
 		private static readonly Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<NamePlateData> allNameplates = HatManager.Instance.allNamePlates;
 
+		private static readonly System.Random rnd = new System.Random();
+
 		public static int GetRandomUnusedColor()
 		{
 			List<int> colors = Enumerable.Range(0, 18).ToList();
@@ -25,8 +27,6 @@ namespace HydraMenu
 				colors.Remove(player.Data.DefaultOutfit.ColorId);
 			}
 
-			System.Random rnd = new System.Random();
-
 			// Some modded lobbies may have more than 18 players, which means there will not be enough unique colors for everyone
 			// so we should take that edge case into account
 			return colors.Count != 0 ? colors[rnd.Next(0, colors.Count)] : rnd.Next(0, 18);
@@ -34,8 +34,6 @@ namespace HydraMenu
 
 		public static void RandomizePlayer(bool inGame = false)
 		{
-			System.Random rnd = new System.Random();
-
 			if(inGame)
 			{
 				PlayerControl.LocalPlayer.CmdCheckColor((byte)GetRandomUnusedColor());
@@ -75,7 +73,6 @@ namespace HydraMenu
 
 			if(validPlayers.Count == 0) return null;
 
-			System.Random rnd = new System.Random();
 			return validPlayers[rnd.Next(validPlayers.Count)];
 		}
 

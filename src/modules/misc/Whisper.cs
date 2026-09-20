@@ -92,6 +92,8 @@ namespace HydraMenu.modules.misc
 
 		protected override void OnDisable()
 		{
+			target = null;
+
 			EventCoordinator.OnPlayerDisconnect -= OnPlayerDisconnect;
 			EventCoordinator.OnDisconnect -= OnDisconnect;
 		}

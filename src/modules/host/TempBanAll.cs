@@ -34,6 +34,14 @@ namespace HydraMenu.modules.host
 		// and thus being banned for long periods of time
 		private IEnumerator Run()
 		{
+			// Normally the client timeout for spawning in the map is fifteen seconds
+			// however if the map ID in CurrentGameOptions is set to Airship or Fungle, then the timeout is increased to twenty seconds
+			// We do not actually need to spawn in an Airship or Fungle ShipStatus, we just need to set it in the game options
+			// Setting the map ID to Fungle gives five additional seconds for all clients to handle all the start game messages
+			IGameOptions gameOptions = GameOptions.CreateCloneOptions(GameManager.Instance.LogicOptions.currentGameOptions);
+			gameOptions.SetByte(ByteOptionNames.MapId, (byte)MapNames.Fungle);
+			GameOptions.SendGameOptionsToClient(gameOptions, -1);
+
 			// The AmongUsClient::CoStartGame coroutine is responsible for awarding ban points. This function is called every time the client receives the StartGame root message
 			// By spamming the StartGame root message, we can make the client run this coroutine many times at once, which will each award the player one ban point
 			for(int i = 0; i < START_GAME_COUNT; i++)

@@ -375,6 +375,11 @@ namespace HydraMenu.network
 			msgCount++;
 		}
 
+		public void QueueSetHatStr(PlayerControl source, string hat)
+		{
+			QueueSetHatStr(source, hat, ++source.Data.DefaultOutfit.HatSequenceId);
+		}
+
 		public void QueueSetHatStr(PlayerControl source, string hat, byte seqId)
 		{
 			if(IsGlobal || AmTarget)
@@ -391,6 +396,11 @@ namespace HydraMenu.network
 			writer.EndMessage();
 
 			msgCount++;
+		}
+
+		public void QueueSetSkinStr(PlayerControl source, string skin)
+		{
+			QueueSetSkinStr(source, skin, ++source.Data.DefaultOutfit.SkinSequenceId);
 		}
 
 		public void QueueSetSkinStr(PlayerControl source, string skin, byte seqId)
@@ -411,6 +421,11 @@ namespace HydraMenu.network
 			msgCount++;
 		}
 
+		public void QueueSetPetStr(PlayerControl source, string pet)
+		{
+			QueueSetPetStr(source, pet, ++source.Data.DefaultOutfit.PetSequenceId);
+		}
+
 		public void QueueSetPetStr(PlayerControl source, string pet, byte seqId)
 		{
 			if(IsGlobal || AmTarget)
@@ -429,6 +444,11 @@ namespace HydraMenu.network
 			msgCount++;
 		}
 
+		public void QueueSetVisorStr(PlayerControl source, string visor)
+		{
+			QueueSetVisorStr(source, visor, ++source.Data.DefaultOutfit.VisorSequenceId);
+		}
+
 		public void QueueSetVisorStr(PlayerControl source, string visor, byte seqId)
 		{
 			if(IsGlobal || AmTarget)
@@ -445,6 +465,11 @@ namespace HydraMenu.network
 			writer.EndMessage();
 
 			msgCount++;
+		}
+
+		public void QueueSetNameplateStr(PlayerControl source, string nameplate)
+		{
+			QueueSetNameplateStr(source, nameplate, ++source.Data.DefaultOutfit.NamePlateSequenceId);
 		}
 
 		public void QueueSetNameplateStr(PlayerControl source, string nameplate, byte seqId)

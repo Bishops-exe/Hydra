@@ -95,11 +95,11 @@ namespace HydraMenu
 				batch.QueueSetColor(PlayerControl.LocalPlayer, (byte)outfit.ColorId);
 			}
 
-			batch.QueueSetNameplateStr(PlayerControl.LocalPlayer, outfit.NamePlateId, ++outfit.NamePlateSequenceId);
-			batch.QueueSetHatStr(PlayerControl.LocalPlayer, outfit.HatId, ++outfit.HatSequenceId);
-			batch.QueueSetVisorStr(PlayerControl.LocalPlayer, outfit.VisorId, ++outfit.VisorSequenceId);
-			batch.QueueSetSkinStr(PlayerControl.LocalPlayer, outfit.SkinId, ++outfit.SkinSequenceId);
-			batch.QueueSetPetStr(PlayerControl.LocalPlayer, outfit.PetId, ++outfit.PetSequenceId);
+			batch.QueueSetNameplateStr(PlayerControl.LocalPlayer, outfit.NamePlateId);
+			batch.QueueSetHatStr(PlayerControl.LocalPlayer, outfit.HatId);
+			batch.QueueSetVisorStr(PlayerControl.LocalPlayer, outfit.VisorId);
+			batch.QueueSetSkinStr(PlayerControl.LocalPlayer, outfit.SkinId);
+			batch.QueueSetPetStr(PlayerControl.LocalPlayer, outfit.PetId);
 
 			batch.FinishBatch();
 		}

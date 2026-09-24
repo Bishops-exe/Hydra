@@ -373,5 +373,31 @@ namespace HydraMenu
 
 			Hydra.notifications.Send("Kick Player", $"{player.Data.PlayerName} has been kicked from the game.", 5);
 		}
+
+		// Kicks out everyone in the lobby apart from ourselves and the host
+		// The Enter ventilation system update is broadcasted to every client at once, so it only has to be sent a single time
+		// which is why the first stage of the kick is skipped for each individual player afterwards
+		public static void KickAllPlayers()
+		{
+			Hydra.Log.LogInfo($"Sending Enter ventilation system update to all players");
+
+			MessageWriter writer = MessageWriter.Get(SendOption.Reliable);
+			writer.Write((ushort)0);
+			writer.Write((byte)VentilationSystem.Operation.Enter);
+			writer.Write((byte)0);
+
+			BatchedMessage batch = new BatchedMessage();
+			batch.QueueUpdateSystem(PlayerControl.LocalPlayer, SystemTypes.Ventilation, writer);
+			batch.FinishBatch();
+
+			writer.Recycle();
+
+			foreach(PlayerControl player in PlayerControl.AllPlayerControls)
+			{
+				if(player == PlayerControl.LocalPlayer || player.OwnerId == AmongUsClient.Instance.HostId) continue;
+
+				KickPlayer(player, true);
+			}
+		}
 	}
 }

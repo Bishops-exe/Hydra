@@ -71,6 +71,7 @@ namespace HydraMenu.modules
 		public static DisableCloseDoors disableCloseDoors = new DisableCloseDoors();
 		public static DisableSabotages disableSabotages = new DisableSabotages();
 		public static DisableVents disableVents = new DisableVents();
+		public static VotekickRetaliation votekickRetaliation = new VotekickRetaliation();
 
 		// Visual
 		public static AccurateDisconnectReason accurateDisconnectReason = new AccurateDisconnectReason();
@@ -137,6 +138,7 @@ namespace HydraMenu.modules
 				disableCloseDoors,
 				disableSabotages,
 				disableVents,
+				votekickRetaliation,
 
 				accurateDisconnectReason,
 				alwaysVisibleChat,

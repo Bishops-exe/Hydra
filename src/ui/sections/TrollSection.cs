@@ -1,5 +1,4 @@
 ﻿using BepInEx.Unity.IL2CPP.Utils.Collections;
-using Hazel;
 using HydraMenu.assets;
 using HydraMenu.modules;
 using HydraMenu.network;
@@ -36,25 +35,7 @@ namespace HydraMenu.ui.sections
 
 			if(GUILayout.Button("Kick All Players"))
 			{
-				Hydra.Log.LogInfo($"Sending Enter ventilation system update to all players");
-
-				MessageWriter writer = MessageWriter.Get(SendOption.Reliable);
-				writer.Write((ushort)0);
-				writer.Write((byte)VentilationSystem.Operation.Enter);
-				writer.Write((byte)0);
-
-				BatchedMessage batch = new BatchedMessage();
-				batch.QueueUpdateSystem(PlayerControl.LocalPlayer, SystemTypes.Ventilation, writer);
-				batch.FinishBatch();
-
-				writer.Recycle();
-
-				foreach(PlayerControl player in PlayerControl.AllPlayerControls)
-				{
-					if(player == PlayerControl.LocalPlayer || player.OwnerId == AmongUsClient.Instance.HostId) continue;
-
-					Utilities.KickPlayer(player, true);
-				}
+				Utilities.KickAllPlayers();
 			}
 
 			if(GUILayout.Button("Copy Random Player"))
@@ -127,6 +108,14 @@ namespace HydraMenu.ui.sections
 
 			GUILayout.Label($"Lock and Unlock Delay: {Hydra.routines.doorTroller.LockAndUnlockDelay:F2}s");
 			Hydra.routines.doorTroller.LockAndUnlockDelay = GUILayout.HorizontalSlider(Hydra.routines.doorTroller.LockAndUnlockDelay, 0.1f, 2.0f);
+
+			GUILayout.Space(5);
+			// Kick everyone out of the lobby as soon as enough players have voted to kick us out
+			GUILayout.Label("Votekick Retaliation:");
+
+			byte triggerVoteCount = ModuleManager.votekickRetaliation.TriggerVoteCount;
+			GUILayout.Label($"Kick all players at: " + (triggerVoteCount == 0 ? "Never" : $"{triggerVoteCount} / {Utilities.VOTEKICK_THRESHOLD} votes"));
+			ModuleManager.votekickRetaliation.TriggerVoteCount = (byte)GUILayout.HorizontalSlider(triggerVoteCount, 0, Utilities.VOTEKICK_THRESHOLD - 1);
 
 			GUILayout.Space(5);
 			GUILayout.Label("Auto Expose Impostors:");
